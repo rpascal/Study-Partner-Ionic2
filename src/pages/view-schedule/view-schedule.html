@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Schedule</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item-sliding *ngFor="let lis of (outputClasses)" #slidingItem>
+
+      <button ion-item (click)="onSelectClass(lis)">
+          <h3>{{lis.intructorName}}</h3>
+          <h3>{{lis.courseNum}}</h3>
+          <p>
+           {{lis.startDate | date:'h:mm a'}} | {{lis.endDate | date:'h:mm a'}}
+          </p>
+        </button>
+
+      <!--<ion-item-options side="left">
+        <button ion-button color="favorite">
+            Favorite
+          </button>
+      </ion-item-options>-->
+      <ion-item-options side="right">
+        <button ion-button color="primary">
+            View Overlaps
+          </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+</ion-content>

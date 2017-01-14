@@ -1,0 +1,10 @@
+<ion-menu id="sideMenu"  [content]="content">
+   <ion-list>
+      <button ion-item menuClose *ngFor="let p of sidePages" (click)="openPage(p)">
+        <ion-icon item-left [name]="p.icon"></ion-icon>
+        {{p.title}}
+      </button>
+    </ion-list>
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content></ion-nav>
