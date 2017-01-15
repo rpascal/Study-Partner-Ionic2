@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController,PopoverController } from 'ionic-angular';
 
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
@@ -9,7 +9,7 @@ import { ClassService } from '../../services/class-service/class.service';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
 import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
-
+import {PopoverPage} from './view-schedule-popover'
 @Component({
   selector: 'page-view-schedule',
   templateUrl: 'view-schedule.html'
@@ -29,7 +29,8 @@ export class ViewSchedulePage {
     public UserService: UserService,
     public classService: ClassService,
     public observableCombiner: ObservableCombiner,
-    public loadingCtrl: LoadingController) {
+    public loadingCtrl: LoadingController,
+    public popoverCtrl: PopoverController) {
     console.log("this.navParams.get('data')");
   }
 
@@ -38,6 +39,8 @@ export class ViewSchedulePage {
 
   ionViewDidLoad() {
 
+
+   // console.log("hi");
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...'
     });
@@ -47,13 +50,13 @@ export class ViewSchedulePage {
     console.log('inti')
 
     this.classService.getAllObjectCallback(classes => {
-      console.log('inti clas', classes)
+     // console.log('inti clas', classes)
       this.masterClasses = classes;
       this.filterClasses();
     });
-    console.log(this.scheduleService)
+    //console.log(this.scheduleService)
     this.scheduleService.getCurrentUsersScheduleCallback(userSchedule => {
-      console.log('schedule', userSchedule)
+     // console.log('schedule', userSchedule)
       this.scheduleKeys = userSchedule;
       delete this.scheduleKeys['$exists'];
       delete this.scheduleKeys['$key'];
@@ -115,6 +118,15 @@ export class ViewSchedulePage {
     );
   }
 
+  ionViewWillEnter(){
+    console.log('will enter');
+  }
+
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(PopoverPage);
+    popover.present({ ev: event });
+  }
 
   ionViewCanLeave(): boolean {
     try {

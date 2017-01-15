@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NavController, NavParams, AlertController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ModalController, ViewController } from 'ionic-angular';
 import { ClassModel, ClassService } from '../../services/class-service/class.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService } from '../../services/user-service/user.service';
@@ -35,7 +35,8 @@ export class AddClassPage {
     public observableCombiner: ObservableCombiner,
     public fb: FirebaseService,
     public alertCtrl: AlertController,
-    public modalCtrl: ModalController) {     }
+    public modalCtrl: ModalController,
+    public viewCtrl : ViewController) {     }
 
   generateDaysPerWeek() {
     let alert = this.alertCtrl.create();
@@ -102,10 +103,13 @@ export class AddClassPage {
         }
         let key: string = this.classService.add(entity, classesArray);
         this.scheduleService.update(callback[0].uid, key);
+        //this.viewCtrl.dismiss();
+        
         this.navCtrl.setRoot(ViewSchedulePage);
       }
     );
   }
+
 
   instructorSearchSubmit($event) {
     this.selectedIntructor = $event[0].$key;
@@ -127,6 +131,8 @@ export class AddClassPage {
     });
     profileModal.present();
   }
+
+
 
   ionViewCanLeave(): boolean {
     try {

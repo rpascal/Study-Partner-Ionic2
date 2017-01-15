@@ -56,7 +56,7 @@ export class FirebaseService {
     return this.af.database.object(path);
   }
   getObjectCallBack(path, callBack) {
-    console.log('obnject', path)
+   // console.log('obnject', path)
     let sub = this.getObject(path).subscribe(callBack);
     this.subscriptions.push(sub);
   }

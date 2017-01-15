@@ -30,9 +30,9 @@ export class MyApp implements OnInit, OnDestroy {
     { title: 'About', component: TabsPage, icon: 'person-add', index: 1 },
     { title: 'Contact', component: TabsPage, icon: 'person-add', index: 2 },
     { title: 'View Schedule', component: ViewSchedulePage, icon: 'person-add' },
-    { title: 'Add Class', component: AddClassPage, icon: 'person-add' },
-    { title: 'Search Course', component: CourseInstructorSearchPage, icon: 'person-add' },
-    { title: 'Log out', component: TabsPage, icon: 'help', logsOut: true }
+    // { title: 'Add Class', component: AddClassPage, icon: 'person-add' },
+    // { title: 'Search Course', component: CourseInstructorSearchPage, icon: 'person-add' },
+     { title: 'Log out', component: TabsPage, icon: 'help', logsOut: true }
   ];
 
   ngOnInit() {
