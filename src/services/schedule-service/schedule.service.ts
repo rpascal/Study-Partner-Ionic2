@@ -6,10 +6,14 @@ import { FirebaseService } from '../firebase/firebase.service'
 export class ScheduleService {
 
 
-  constructor(private fb: FirebaseService) { }
+  constructor(private fb: FirebaseService) { 
+
+    console.log('schedule create')
+  }
 
   getCurrentUsersScheduleCallback(cb) {
     this.fb.getAuthCallback(auth => {
+       console.log('schedule create', auth)
       this.fb.getObjectCallBack('/Schedule/' + auth.uid, cb)
     })
   }

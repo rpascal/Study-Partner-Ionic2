@@ -6,6 +6,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { ViewSchedulePage } from '../pages/view-schedule/view-schedule';
 import {AddClassPage} from '../pages/add-class/add-class';
+import {CourseInstructorSearchPage} from '../pages/course-instructor-search/course-instructor-search'
 
 export class pages {
   static getPages() {
@@ -16,7 +17,8 @@ export class pages {
       TabsPage,
       LoginPage,
       ViewSchedulePage,
-      AddClassPage
+      AddClassPage,
+      CourseInstructorSearchPage
     ];
   }
 }

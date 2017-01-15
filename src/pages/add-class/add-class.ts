@@ -1,17 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NavController, NavParams ,AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ModalController } from 'ionic-angular';
 import { ClassModel, ClassService } from '../../services/class-service/class.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
 import { UserService } from '../../services/user-service/user.service';
 import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
 import { FirebaseService } from '../../services/firebase/firebase.service'
+import { CourseInstructorSearchPage } from '../course-instructor-search/course-instructor-search'
+import { ViewSchedulePage } from '../view-schedule/view-schedule'
 
-/*
-  Generated class for the AddClass page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-add-class',
   templateUrl: 'add-class.html'
@@ -19,33 +15,13 @@ import { FirebaseService } from '../../services/firebase/firebase.service'
 export class AddClassPage {
 
 
-  private startTime = new Date();
-  private endTime = new Date();
-  private toppings;
+  private DaysOfWeek: Array<string> = ['Monday', 'Tuesday', 'Wednesday',
+    'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  selectOptions = {
-  title: 'Pizza Toppings',
-  subTitle: 'Select your toppings',
-  inputs: [
-      {
-        name: 'username',
-        placeholder: 'Username'
-      },
-      {
-        name: 'password',
-        placeholder: 'Password',
-        type: 'password'
-      }
-    ]
-};
+  private startTime: string;
+  private endTime: string;
+  private selectedDays: Array<string> = [];
 
-  private monday = false;
-  private tuesday = false;
-  private wednesday = false;
-  private thursday = false;
-  private friday = false;
-  private saturday = false;
-  private sunday = false;
 
 
   private selectedCourse;
@@ -58,61 +34,56 @@ export class AddClassPage {
     public UserService: UserService,
     public observableCombiner: ObservableCombiner,
     public fb: FirebaseService,
-    public alertCtrl: AlertController) {
-      
+    public alertCtrl: AlertController,
+    public modalCtrl: ModalController) {     }
 
-  }
-
-showCheckbox() {
+  generateDaysPerWeek() {
     let alert = this.alertCtrl.create();
-    alert.setTitle('Select Days');
+    alert.setTitle('Days Per Week');
+    this.DaysOfWeek.forEach(day => {
+      let checked: boolean =
+        (this.selectedDays.findIndex(value => value === day) != -1) ?
+          true : false;
+      alert.addInput({
+        type: 'checkbox',
+        label: day,
+        value: day,
+        checked: checked
+      });
 
-    alert.addInput({
-      type: 'checkbox',
-      label: 'Alderaan',
-      value: 'value1',
-      checked: true
     });
-
-    alert.addInput({
-      type: 'checkbox',
-      label: 'Bespin',
-      value: 'value2'
-    });
-
     alert.addButton('Cancel');
     alert.addButton({
       text: 'Okay',
       handler: data => {
         console.log('Checkbox data:', data);
-        this.toppings = data;
-       // this.testCheckboxResult = data;
+        this.selectedDays = data;
+
       }
     });
     alert.present();
   }
 
-  test(){
-console.log(this.startTime,this.endTime, this.toppings);
-
-  }
 
   submit() {
 
     let entity: ClassModel = new ClassModel();
 
-    entity.setEndDate(this.endTime.getHours, this.endTime.getMinutes);
-    entity.setStartDate(this.startTime.getHours, this.startTime.getMinutes);
-    entity.addDay('Monday', this.monday);
-    entity.addDay('Tuesday', this.tuesday);
-    entity.addDay('Wednesday', this.wednesday);
-    entity.addDay('Thursday', this.thursday);
-    entity.addDay('Friday', this.friday);
-    entity.addDay('Saturday', this.saturday);
-    entity.addDay('Sunday', this.sunday);
+    entity.setEndDate(this.endTime.split(':')[0], this.endTime.split(':')[1]);
+    entity.setStartDate(this.startTime.split(':')[0], this.startTime.split(':')[1]);
 
-    entity.intructorKey = this.selectedIntructor;
-    entity.courseKey = this.selectedCourse;
+    this.DaysOfWeek.forEach(day => {
+      let classThatDay: boolean =
+        (this.selectedDays.findIndex(value => value === day) != -1) ?
+          true : false;
+
+      entity.addDay(day, classThatDay);
+      //console.log(day, classThatDay);
+    });
+
+
+    entity.intructorKey = this.selectedIntructor.$key;
+    entity.courseKey = this.selectedCourse.$key;
 
 
     this.observableCombiner.combineObservablesWithTake1(
@@ -129,10 +100,9 @@ console.log(this.startTime,this.endTime, this.toppings);
           callback[1][property].$key = property;
           classesArray.push(callback[1][property]);
         }
-
-
         let key: string = this.classService.add(entity, classesArray);
         this.scheduleService.update(callback[0].uid, key);
+        this.navCtrl.setRoot(ViewSchedulePage);
       }
     );
   }
@@ -148,13 +118,29 @@ console.log(this.startTime,this.endTime, this.toppings);
     console.log($event);
   }
 
-
-  ngOnDestroy() {
-    this.scheduleService.destroy();
-    this.UserService.destroy();
-    this.classService.destroy();
-    this.observableCombiner.destroy();
-    this.fb.destroy();
+  goToCourseSearch() {
+    let profileModal = this.modalCtrl.create(CourseInstructorSearchPage);
+    profileModal.onDidDismiss(data => {
+      this.selectedIntructor = data['instructor'];
+      this.selectedCourse = data['course'];
+      console.log(data);
+    });
+    profileModal.present();
   }
+
+  ionViewCanLeave(): boolean {
+    try {
+      this.scheduleService.destroy();
+      this.UserService.destroy();
+      this.classService.destroy();
+      this.observableCombiner.destroy();
+      this.fb.destroy();
+      console.log('leaving')
+      return true;
+    } catch(err){
+      return false;
+    }
+  }
+
 
 }

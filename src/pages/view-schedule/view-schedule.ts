@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { ScheduleService } from '../../services/schedule-service/schedule.service';
@@ -9,7 +9,6 @@ import { ClassService } from '../../services/class-service/class.service';
 import { InstructorService } from '../../services/instructorService/instructor.service';
 import { CourseService } from '../../services/courseService/course.service';
 import { ObservableCombiner } from '../../services/ObservableCombiner/observable-combiner.service'
-
 
 @Component({
   selector: 'page-view-schedule',
@@ -22,23 +21,39 @@ export class ViewSchedulePage {
   private scheduleKeys: Array<any>;
 
   constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     public instructorService: InstructorService,
     public courseService: CourseService,
     public fb: FirebaseService,
     public scheduleService: ScheduleService,
     public UserService: UserService,
     public classService: ClassService,
-    public observableCombiner: ObservableCombiner) {
+    public observableCombiner: ObservableCombiner,
+    public loadingCtrl: LoadingController) {
+    console.log("this.navParams.get('data')");
   }
 
-  ngOnInit() {
+  public loading;
+
+
+  ionViewDidLoad() {
+
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+
+    this.loading.present();
+
+    console.log('inti')
 
     this.classService.getAllObjectCallback(classes => {
+      console.log('inti clas', classes)
       this.masterClasses = classes;
       this.filterClasses();
     });
-
+    console.log(this.scheduleService)
     this.scheduleService.getCurrentUsersScheduleCallback(userSchedule => {
+      console.log('schedule', userSchedule)
       this.scheduleKeys = userSchedule;
       delete this.scheduleKeys['$exists'];
       delete this.scheduleKeys['$key'];
@@ -48,7 +63,6 @@ export class ViewSchedulePage {
 
   onSelectClass(selectedClass) {
     console.log(selectedClass)
-    //this.selectedClass.emit(selectedClass);
   }
 
 
@@ -79,6 +93,8 @@ export class ViewSchedulePage {
           this.outputClasses[ii]['intructorName'] = v.name;
         })
       })
+
+      this.loading.dismiss();
     }
   }
 
@@ -99,14 +115,21 @@ export class ViewSchedulePage {
     );
   }
 
-  ngOnDestroy() {
-    this.instructorService.destroy();
-    this.courseService.destroy();
-    this.scheduleService.destroy();
-    this.UserService.destroy();
-    this.classService.destroy();
-    this.observableCombiner.destroy();
-    this.fb.destroy();
+
+  ionViewCanLeave(): boolean {
+    try {
+      this.instructorService.destroy();
+      this.courseService.destroy();
+      this.scheduleService.destroy();
+      this.UserService.destroy();
+      this.classService.destroy();
+      this.observableCombiner.destroy();
+      this.fb.destroy();
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
+
 
 }

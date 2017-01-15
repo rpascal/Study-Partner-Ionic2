@@ -6,6 +6,8 @@ import { FirebaseService } from '../services/firebase/firebase.service'
 import { LoginPage } from '../pages/login/login'
 import { ViewSchedulePage } from '../pages/view-schedule/view-schedule'
 import { AddClassPage } from '../pages/add-class/add-class'
+import { CourseInstructorSearchPage } from '../pages/course-instructor-search/course-instructor-search'
+
 
 export interface PageInterface {
   title: string;
@@ -29,6 +31,7 @@ export class MyApp implements OnInit, OnDestroy {
     { title: 'Contact', component: TabsPage, icon: 'person-add', index: 2 },
     { title: 'View Schedule', component: ViewSchedulePage, icon: 'person-add' },
     { title: 'Add Class', component: AddClassPage, icon: 'person-add' },
+    { title: 'Search Course', component: CourseInstructorSearchPage, icon: 'person-add' },
     { title: 'Log out', component: TabsPage, icon: 'help', logsOut: true }
   ];
 

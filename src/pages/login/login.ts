@@ -68,4 +68,14 @@ export class LoginPage {
     //this.navCtrl.push(SignupPage);
   }
 
+  ionViewCanLeave(): boolean {
+    try {
+      this.fb.destroy();
+      console.log('leaving')
+      return true;
+    } catch(err){
+      return false;
+    }
+  }
+
 }

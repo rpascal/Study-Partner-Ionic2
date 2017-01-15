@@ -19,20 +19,17 @@
   </ion-item>
 
 
-  <button ion-button block color="danger" (click)="showCheckbox()">Show Checkbox Alert</button>
+  <button ion-button block color="danger" (click)="generateDaysPerWeek()">Select Days Per Week</button>
+  <button ion-button block color="danger" (click)="goToCourseSearch()">Select Course and INstructor</button>
 
-<ion-item>
-  <ion-label>Toppings</ion-label>
-  <ion-select [(ngModel)]="toppings" multiple="true">
-    <ion-option>Bacon</ion-option>
-    <ion-option>Black Olives</ion-option>
-    <ion-option>Extra Cheese</ion-option>
-    <ion-option>Mushrooms</ion-option>
-    <ion-option>Pepperoni</ion-option>
-    <ion-option>Sausage</ion-option>
-  </ion-select>
-</ion-item>
+   <ion-item *ngIf="selectedCourse">
+    <ion-label>{{selectedCourse.course}}</ion-label>
+  </ion-item>
+     <ion-item *ngIf="selectedIntructor">
+    <ion-label>{{selectedIntructor.name}}</ion-label>
+  </ion-item>
 
-<button (click)='test()'>Test me</button>
+
+<button ion-button block color="primary" (click)='submit()'>Add Class</button>
 
 </ion-content>
