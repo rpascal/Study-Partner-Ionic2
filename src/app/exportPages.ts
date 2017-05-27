@@ -8,7 +8,7 @@ import { ViewSchedulePage } from '../pages/view-schedule/view-schedule';
 import { PopoverPage } from '../pages/view-schedule/view-schedule-popover';
 import {AddClassPage} from '../pages/add-class/add-class';
 import {CourseInstructorSearchPage} from '../pages/course-instructor-search/course-instructor-search'
-
+import {FindOverlapPage} from '../pages/find-overlap/find-overlap'
 
 
 export class pages {
@@ -22,7 +22,8 @@ export class pages {
       ViewSchedulePage,
       AddClassPage,
       CourseInstructorSearchPage,
-      PopoverPage
+      PopoverPage,
+      FindOverlapPage
     ];
   }
 }
